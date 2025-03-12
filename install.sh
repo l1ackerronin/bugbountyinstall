@@ -3,7 +3,8 @@
 : ' Tools
 python3, python3-pip3, golang, subfinder, assetfinder, findomain, amass, chaos, gf, snap, knockpy, sublist3r, gau, uro, nuclei, nmap, waybackurls,
 photon, arjun, dirbuster, dirb, secretfinder, Mantra, katana, paramspider, cewl, anew, ffuf, aws, s3scanner, naabu, httpx, dalfox, oam_subs, jq
-puredns, feroxbuster, xnLinkFinder, subzy, socialhunter, hakrawler, asnmap, github-subdomains, subjs, Sudomy, phantomjs, npm, chromium, parallel
+puredns, feroxbuster, xnLinkFinder, subzy, socialhunter, hakrawler, asnmap, github-subdomains, subjs, Sudomy, phantomjs, npm, chromium, parallel,
+subvcat
 ' 
 
 
@@ -44,7 +45,8 @@ go install -v github.com/lc/subjs@latest
 
 
 #python pip3
-pip3 install uro
+pip3 install uro --break-system-packages
+pip3 install subcat --break-system-packages
 
 
 #GF Patterns Setup
