@@ -4,7 +4,7 @@
 python3, pip3, golang, subfinder, assetfinder, findomain, amass, chaos, gf, snap, knockpy, sublist3r, gau, uro, nuclei, nmap, waybackurls,
 photon, arjun, dirbuster, dirb, secretfinder, Mantra, katana, paramspider, cewl, anew, ffuf, aws, s3scanner, naabu, httpx, dalfox, oam_subs, jq
 puredns, feroxbuster, xnLinkFinder, subzy, socialhunter, hakrawler, asnmap, github-subdomains, subjs, Sudomy, phantomjs, npm, chromium, parallel,
-subvcat
+subvcat, tmux
 ' 
 
 
@@ -12,7 +12,7 @@ subvcat
 apt update 
 apt upgrade -y
 apt remove --purge golang -y
-apt install -y python3 golang snap knockpy sublist3r nmap photon arjun dirbuster dirb cewl feroxbuster jq nmap npm chromium fish parallel
+apt install -y python3 golang snap knockpy sublist3r nmap photon arjun dirbuster dirb cewl feroxbuster jq nmap npm chromium fish parallel tmux
 
 path=("~/Desktop/websec")
 mkdir -p $path $path/tools
