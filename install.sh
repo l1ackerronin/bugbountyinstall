@@ -4,7 +4,7 @@
 python3, pip3, golang, subfinder, assetfinder, findomain, amass, chaos, gf, snap, knockpy, sublist3r, gau, uro, nuclei, nmap, waybackurls,
 photon, arjun, dirbuster, dirb, secretfinder, Mantra, katana, paramspider, cewl, anew, ffuf, aws, s3scanner, naabu, httpx, dalfox, oam_subs, jq
 puredns, feroxbuster, xnLinkFinder, subzy, socialhunter, hakrawler, asnmap, github-subdomains, subjs, Sudomy, phantomjs, npm, chromium, parallel,
-subvcat, tmux
+subvcat, tmux, alterx
 ' 
 
 
@@ -18,6 +18,7 @@ path=("~/Desktop/websec")
 mkdir -p $path $path/tools
 
 #golang tools
+go install github.com/projectdiscovery/alterx/cmd/alterx@latest
 go install -v github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest
 go install -v github.com/tomnomnom/assetfinder@latest
 go install -v github.com/projectdiscovery/chaos-client/cmd/chaos@latest
