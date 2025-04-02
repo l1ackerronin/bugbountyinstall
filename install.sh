@@ -1,14 +1,8 @@
 #!/bin/bash
 
-
-: ' Tools
-notify, tok, gau, anti-burl, unfurl, anew, fff, subzy, gron, qsreplace, cf-check, Jeeves, time-sql, mrco24-error-sql, nuclei, cent, afrog, getJS, 
-mantra, bxss, Gxss, kxss, dalfox, interactsh-client, open-redirect, mrco24-lfi, naabu, gowitness, httpx, httprobe, gospider, hakrawler, waybackurls, 
-katana, parameters, gf, web-archive, otx-url, dnsx, puredns, shuffledns, subfinder, assetfinder, github-subdomains, amass, crobat, mapcidr, chaos, 
-gotator, cero, galer, haktrails, quickcert, alterx, ffuf, socialhunter, asnmap, oam_subs, subjs, python3, pip3, golang, subfinder, assetfinder, 
-findomain, amass, chaos, gf, snap, knockpy, sublist3r, gau, uro, nuclei, nmap, waybackurls, photon, arjun, dirbuster, dirb, secretfinder, 
-Mantra, katana, paramspider, cewl
-'
+#script info
+author="@nahid0x1"
+version="v2"
 
 #colors
 BLACK='\033[0;30m'
@@ -21,6 +15,13 @@ CYAN='\033[0;36m'
 WHITE='\033[0;37m'
 SPACE_PURPLE='\033[1;35m'
 info="${WHITE}[-${YELLOW}Info${WHITE}-]"
+
+#path
+path=("~/websec")
+
+mkdir -p ~/websec
+mkdir -p ~/websec/tools
+
 
 
 #requirement for mac
@@ -54,14 +55,10 @@ requirement_mac(){
         fi
     done
 
-
-    path=("~/Desktop/websec")
-    mkdir -p $path $path/tools
-
     echo 'export PATH="$PATH:~/go/bin"' >> ~/.bashrc
     echo 'export PATH="$PATH:~/go/bin"' >> ~/.zshrc
 
-}
+
 
 #requirement for linux
 requirement_linux(){
@@ -246,36 +243,38 @@ python_tools(){
 
 
     #GF Patterns Setup
+    rm -rf  ~/.gf Gf Gf-Patterns
     git clone https://github.com/1ndianl33t/Gf-Patterns
     git clone https://github.com/tomnomnom/Gf
+    rm -rf  ~/.gf 
     mkdir -p ~/.gf && cd ~/Gf/examples && mv * ~/.gf && cd ~/Gf-Patterns && mv * ~/.gf
 
     #findomain install
     mkdir -p $path/tools/findomain
     cd $path/tools/findomain
     curl -LO https://github.com/findomain/findomain/releases/latest/download/findomain-linux.zip
-    unzip findomain-linux.zip
-    chmod +x findomain 
-    sudo mv findomain /usr/bin/findomain 
+    unzip $path/tools/findomain/findomain-linux.zip
+    chmod +x $path/tools/findomain/findomain 
+    sudo mv $path/tools/findomain/findomain /usr/bin/findomain 
 
 
 
     git clone https://github.com/m4ll0k/SecretFinder.git $path/tools/secretfinder 
     cd $path/tools/secretfinder 
-    pip3 install -r requirements.txt
+    pip3 install -r $path/tools/secretfinder/requirements.txt
 
     git clone https://github.com/xnl-h4ck3r/xnLinkFinder.git $path/tools/xnLinkFinder 
     cd $path/tools/xnLinkFinder 
-    sudo python3 setup.py install 
+    sudo python3 $path/tools/xnLinkFinder/setup.py install 
 
     git clone https://github.com/devanshbatham/paramspider $path/tools/paramspider 
     cd $path/tools/paramspider  
-    pip3 install .
+    pip3 install $path/tools/paramspider/.
 
 
     git clone --recursive https://github.com/screetsec/Sudomy.git $path/tools/Sudomy
     cd $path/tools/Sudomy
-    pip3 install -r requirements.txt
+    pip3 install -r $path/tools/Sudomy/requirements.txt
     
 }
 
@@ -291,36 +290,38 @@ python_alternate(){
 
 
     #GF Patterns Setup
+    rm -rf  ~/.gf Gf Gf-Patterns
     git clone https://github.com/1ndianl33t/Gf-Patterns
     git clone https://github.com/tomnomnom/Gf
+    rm -rf  ~/.gf 
     mkdir -p ~/.gf && cd ~/Gf/examples && mv * ~/.gf && cd ~/Gf-Patterns && mv * ~/.gf
 
     #findomain install
     mkdir -p $path/tools/findomain
     cd $path/tools/findomain
     curl -LO https://github.com/findomain/findomain/releases/latest/download/findomain-linux.zip
-    unzip findomain-linux.zip
-    chmod +x findomain 
-    sudo mv findomain /usr/bin/findomain 
+    unzip $path/tools/findomain/findomain-linux.zip
+    chmod +x $path/tools/findomain/findomain 
+    sudo mv $path/tools/findomain/findomain /usr/bin/findomain 
 
 
 
     git clone https://github.com/m4ll0k/SecretFinder.git $path/tools/secretfinder 
     cd $path/tools/secretfinder 
-    pip3 install -r requirements.txt --break-system-packages
+    pip3 install -r $path/tools/secretfinder/requirements.txt --break-system-packages
 
     git clone https://github.com/xnl-h4ck3r/xnLinkFinder.git $path/tools/xnLinkFinder 
     cd $path/tools/xnLinkFinder 
-    sudo python3 setup.py install 
+    sudo python3 $path/tools/xnLinkFinder/setup.py install 
 
     git clone https://github.com/devanshbatham/paramspider $path/tools/paramspider 
     cd $path/tools/paramspider  
-    pip3 install . --break-system-packages
+    pip3 install $path/tools/paramspider/. --break-system-packages
 
 
     git clone --recursive https://github.com/screetsec/Sudomy.git $path/tools/Sudomy
     cd $path/tools/Sudomy
-    pip3 install -r requirements.txt --break-system-packages
+    pip3 install -r $path/tools/Sudomy/requirements.txt --break-system-packages
 }
 
 
@@ -332,7 +333,7 @@ show_help() {
     echo -e "${RED}\______   \__ __  ____   \______   \ ____  __ __  _____/  |_ ___.__."
     echo -e "${RED} |    |  _/  |  \/ ___\   |    |  _//  _ \|  |  \/    \   __<   |  |"
     echo -e "${RED} |    |   \  |  / /_/  >  |    |   (  <_> )  |  /   |  \  |  \___  |"
-    echo -e "${RED} |______  /____/\___  /   |______  /\____/|____/|___|  /__|  / ____| [v1] ${GREEN}[@nahid0x1]"
+    echo -e "${RED} |______  /____/\___  /   |______  /\____/|____/|___|  /__|  / ____| [${version}] ${GREEN}[${author}]"
     echo -e "${RED}        \/     /_____/           \/                  \/      \/     "
     echo -e "${WHITE}"
     echo -e "\nUsage: $name [OPTIONS]"
