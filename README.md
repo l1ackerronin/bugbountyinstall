@@ -4,6 +4,15 @@ This script provides an easy setup for web security tools on both macOS and Linu
 
 <img width="1475" alt="picture" src="https://github.com/user-attachments/assets/85164089-85cf-4a07-8e77-4215dbac9580" />
 
+## Tools List
+```bash
+notify, tok, gau, anti-burl, unfurl, anew, fff, subzy, gron, qsreplace, cf-check, Jeeves, time-sql, mrco24-error-sql, nuclei, cent, afrog, getJS, 
+mantra, bxss, Gxss, kxss, dalfox, interactsh-client, open-redirect, mrco24-lfi, naabu, gowitness, httpx, httprobe, gospider, hakrawler, waybackurls, 
+katana, parameters, gf, web-archive, otx-url, dnsx, puredns, shuffledns, subfinder, assetfinder, github-subdomains, amass, crobat, mapcidr, chaos, 
+gotator, cero, galer, haktrails, quickcert, alterx, ffuf, socialhunter, asnmap, oam_subs, subjs, python3, pip3, golang, subfinder, assetfinder, 
+findomain, amass, chaos, gf, snap, knockpy, sublist3r, gau, uro, nuclei, nmap, waybackurls, photon, arjun, dirbuster, dirb, secretfinder, 
+Mantra, katana, paramspider, cewl
+```
 
 ## Features
 
