@@ -37,7 +37,7 @@ cd bugbounty
 
 2. **To view the help screen:**:
 ```bash
-bash install.sh --python-alter
+bash install.sh --help
 ```
 
 3. **For OSX**:
