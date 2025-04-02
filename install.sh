@@ -58,7 +58,7 @@ requirement_mac(){
     echo 'export PATH="$PATH:~/go/bin"' >> ~/.bashrc
     echo 'export PATH="$PATH:~/go/bin"' >> ~/.zshrc
 
-
+}
 
 #requirement for linux
 requirement_linux(){
@@ -99,9 +99,6 @@ requirement_linux(){
         sudo apt install -y -qq "$tool"
     done
 
-
-    path=("~/Desktop/websec")
-    mkdir -p $path $path/tools
 
     echo 'export PATH="$PATH:~/go/bin"' >> ~/.bashrc
     echo 'export PATH="$PATH:~/go/bin"' >> ~/.zshrc
