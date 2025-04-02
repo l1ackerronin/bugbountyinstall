@@ -65,8 +65,8 @@ requirement_linux(){
 
     apt update 
     apt upgrade -y
-    apt remove --purge golang -y -qq
-    apt install libldns-dev -y -qq
+    apt remove --purge golang -y 
+    apt install libldns-dev -y 
 
     requirement_tools=(
         python3
@@ -96,7 +96,7 @@ requirement_linux(){
 
     for tool in "${requirement_tools[@]}"; do
         echo -e "${info} ${RED}*${GREEN}[${RED}$tool ${GREEN}is not installed. Installing...${GREEN}]${RED}*"
-        sudo apt install -y -qq "$tool"
+        sudo apt install -y  "$tool"
     done
 
 
