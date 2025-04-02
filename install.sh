@@ -37,9 +37,11 @@ requirement_mac(){
         npm
         chromium
         fish
+        make
         parallel
         tmux
         unzip
+        gcc
     )
 
     # Check tools
@@ -66,7 +68,8 @@ requirement_linux(){
 
     apt update 
     apt upgrade -y
-    apt remove --purge golang -y
+    apt remove --purge golang -y -qq
+    apt install libldns-dev -y -qq
 
     requirement_tools=(
         python3
@@ -74,10 +77,12 @@ requirement_linux(){
         snap
         knockpy
         sublist3r
+        host
         nmap
         photon
         arjun
         dirbuster
+        dig
         dirb
         cewl
         feroxbuster
@@ -88,6 +93,8 @@ requirement_linux(){
         parallel
         tmux
         unzip
+        make
+        gcc
     )
 
     for tool in "${requirement_tools[@]}"; do
@@ -325,7 +332,7 @@ show_help() {
     echo -e "${RED}\______   \__ __  ____   \______   \ ____  __ __  _____/  |_ ___.__."
     echo -e "${RED} |    |  _/  |  \/ ___\   |    |  _//  _ \|  |  \/    \   __<   |  |"
     echo -e "${RED} |    |   \  |  / /_/  >  |    |   (  <_> )  |  /   |  \  |  \___  |"
-    echo -e "${RED} |______  /____/\___  /   |______  /\____/|____/|___|  /__|  / ____| [v2] ${GREEN}[@nahid0x1]"
+    echo -e "${RED} |______  /____/\___  /   |______  /\____/|____/|___|  /__|  / ____| [v1] ${GREEN}[@nahid0x1]"
     echo -e "${RED}        \/     /_____/           \/                  \/      \/     "
     echo -e "${WHITE}"
     echo -e "\nUsage: $name [OPTIONS]"
