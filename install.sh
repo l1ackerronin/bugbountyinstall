@@ -11,7 +11,6 @@ Mantra, katana, paramspider, cewl
 '
 
 #colors
-notify="[\033[32m██\033[0m]"
 BLACK='\033[0;30m'
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -21,6 +20,7 @@ PURPLE='\033[0;35m'
 CYAN='\033[0;36m'
 WHITE='\033[0;37m'
 SPACE_PURPLE='\033[1;35m'
+info="${WHITE}[-${YELLOW}Info${WHITE}-]"
 
 
 #requirement for mac
@@ -45,7 +45,7 @@ requirement_mac(){
     # Check tools
     for tool in "${required_tools[@]}"; do
         if ! command -v $tool &>/dev/null; then
-            echo -e "$notify ${RED}*${GREEN}[${YELLOW}$tool ${GREEN}is not installed${GREEN}]${RED}*"
+            echo -e "${info} ${RED}*${GREEN}[${RED}$tool ${GREEN}is not installed. Installing...${GREEN}]${RED}*"
             brew install $tool
         else
             echo -e "${WHITE}[-${YELLOW}Info${WHITE}-] ${RED}*${GREEN}[${YELLOW}$tool ${GREEN}is already installed${GREEN}]${RED}*"
@@ -91,7 +91,7 @@ requirement_linux(){
     )
 
     for tool in "${requirement_tools[@]}"; do
-        echo -e "$notify ${RED}*${GREEN}[${YELLOW}$tool ${GREEN}is not installed${GREEN}]${RED}*"
+        echo -e "${info} ${RED}*${GREEN}[${RED}$tool ${GREEN}is not installed. Installing...${GREEN}]${RED}*"
         sudo apt install -y -qq "$tool"
     done
 
@@ -111,83 +111,121 @@ requirement_linux(){
 
 
 
-#golang tools
+# golang tools
 golang_tools() {
-    TOOLS=(
-        "github.com/projectdiscovery/notify/cmd/notify@latest"
-        "github.com/mrco24/tok@latest"
-        "github.com/lc/gau@latest"
-        "github.com/tomnomnom/hacks/anti-burl@latest"
-        "github.com/tomnomnom/unfurl@latest"
-        "github.com/tomnomnom/anew@latest"
-        "github.com/tomnomnom/fff@latest"
-        "github.com/LukaSikic/subzy@latest"
-        "github.com/tomnomnom/gron@latest"
-        "github.com/tomnomnom/qsreplace@latest"
-        "github.com/dwisiswant0/cf-check@latest"
-        "github.com/ferreiraklet/Jeeves@latest"
-        "github.com/mrco24/time-sql@latest"
-        "github.com/mrco24/mrco24-error-sql@latest"
-        "github.com/projectdiscovery/nuclei/v3/cmd/nuclei@latest"
-        "github.com/xm1k3/cent@latest"
-        "github.com/zan8in/afrog/v2/cmd/afrog@latest"
-        "github.com/003random/getJS@latest"
-        "github.com/MrEmpy/mantra@latest"
-        "github.com/ethicalhackingplayground/bxss@latest"
-        "github.com/KathanP19/Gxss@latest"
-        "github.com/Emoe/kxss@latest"
-        "github.com/hahwul/dalfox/v2@latest"
-        "github.com/projectdiscovery/interactsh/cmd/interactsh-client"
-        "github.com/mrco24/open-redirect@latest"
-        "github.com/mrco24/mrco24-lfi@latest"
-        "github.com/projectdiscovery/naabu/v2/cmd/naabu@latest"
-        "github.com/sensepost/gowitness@latest"
-        "github.com/projectdiscovery/httpx/cmd/httpx@latest"
-        "github.com/tomnomnom/httprobe@latest"
-        "github.com/jaeles-project/gospider@latest"
-        "github.com/hakluke/hakrawler@latest"
-        "github.com/tomnomnom/waybackurls@latest"
-        "github.com/projectdiscovery/katana/cmd/katana@latest"
-        "github.com/mrco24/parameters@latest"
-        "github.com/tomnomnom/gf@latest"
-        "github.com/mrco24/web-archive@latest"
-        "github.com/mrco24/otx-url@latest"
-        "github.com/projectdiscovery/dnsx/cmd/dnsx@latest"
-        "github.com/d3mondev/puredns/v2@latest"
-        "github.com/projectdiscovery/shuffledns/cmd/shuffledns@latest"
-        "github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest"
-        "github.com/tomnomnom/assetfinder@latest"
-        "github.com/gwen001/github-subdomains@latest"
-        "github.com/owasp-amass/amass/v4/...@master"
-        "github.com/cgboal/sonarsearch/cmd/crobat@latest"
-        "github.com/projectdiscovery/mapcidr/cmd/mapcidr@latest"
-        "github.com/projectdiscovery/chaos-client/cmd/chaos@latest"
-        "github.com/Josue87/gotator@latest"
-        "github.com/glebarez/cero@latest"
-        "github.com/dwisiswant0/galer@latest"
-        "github.com/hakluke/haktrails@latest"
-        "github.com/c3l3si4n/quickcert@HEAD"
-        "github.com/projectdiscovery/alterx/cmd/alterx@latest"
-        "github.com/ffuf/ffuf/v2@latest"
-        "github.com/utkusen/socialhunter@latest"
-        "github.com/projectdiscovery/asnmap/cmd/asnmap@latest"
-        "github.com/lc/gau/v2/cmd/gau@latest"
-        "github.com/owasp-amass/oam-tools/cmd/oam_subs@master"
-        "github.com/lc/subjs@latest"
+
+    declare -A tools=(
+        ["notify"]=" github.com/projectdiscovery/notify/cmd/notify"
+        ["tok"]=" github.com/mrco24/tok"
+        ["gau"]=" github.com/lc/gau"
+        ["anti-burl"]=" github.com/tomnomnom/hacks/anti-burl"
+        ["unfurl"]=" github.com/tomnomnom/unfurl"
+        ["anew"]=" github.com/tomnomnom/anew"
+        ["fff"]=" github.com/tomnomnom/fff"
+        ["subzy"]=" github.com/PentestPad/subzy"
+        ["gron"]=" github.com/tomnomnom/gron"
+        ["qsreplace"]=" github.com/tomnomnom/qsreplace"
+        ["cf-check"]=" github.com/dwisiswant0/cf-check"
+        ["Jeeves"]=" github.com/ferreiraklet/Jeeves"
+        ["time-sql"]=" github.com/mrco24/time-sql"
+        ["mrco24-error-sql"]=" github.com/mrco24/mrco24-error-sql"
+        ["nuclei"]=" github.com/projectdiscovery/nuclei/v3/cmd/nuclei"
+        ["cent"]=" github.com/xm1k3/cent"
+        ["afrog"]=" github.com/zan8in/afrog/v2/cmd/afrog"
+        ["getJS"]=" github.com/003random/getJS"
+        ["mantra"]=" github.com/Brosck/mantra"
+        ["bxss"]=" github.com/ethicalhackingplayground/bxss/v2/cmd/bxss"
+        ["Gxss"]=" github.com/KathanP19/Gxss"
+        ["kxss"]=" github.com/Emoe/kxss"
+        ["dalfox"]=" github.com/hahwul/dalfox/v2"
+        ["interactsh-client"]=" github.com/projectdiscovery/interactsh/cmd/interactsh-client"
+        ["open-redirect"]=" github.com/mrco24/open-redirect"
+        ["mrco24-lfi"]=" github.com/mrco24/mrco24-lfi"
+        ["naabu"]=" github.com/projectdiscovery/naabu/v2/cmd/naabu"
+        ["gowitness"]=" github.com/sensepost/gowitness"
+        ["httpx"]=" github.com/projectdiscovery/httpx/cmd/httpx"
+        ["httprobe"]=" github.com/tomnomnom/httprobe"
+        ["gospider"]=" github.com/jaeles-project/gospider"
+        ["hakrawler"]=" github.com/hakluke/hakrawler"
+        ["waybackurls"]=" github.com/tomnomnom/waybackurls"
+        ["katana"]=" github.com/projectdiscovery/katana/cmd/katana"
+        ["parameters"]=" github.com/mrco24/parameters"
+        ["gf"]=" github.com/tomnomnom/gf"
+        ["web-archive"]=" github.com/mrco24/web-archive"
+        ["otx-url"]=" github.com/mrco24/otx-url"
+        ["dnsx"]=" github.com/projectdiscovery/dnsx/cmd/dnsx"
+        ["puredns"]=" github.com/d3mondev/puredns/v2"
+        ["shuffledns"]=" github.com/projectdiscovery/shuffledns/cmd/shuffledns"
+        ["subfinder"]=" github.com/projectdiscovery/subfinder/v2/cmd/subfinder"
+        ["assetfinder"]=" github.com/tomnomnom/assetfinder"
+        ["github-subdomains"]=" github.com/gwen001/github-subdomains"
+        ["amass"]=" github.com/owasp-amass/amass/v4/..."
+        ["crobat"]=" github.com/cgboal/sonarsearch/cmd/crobat"
+        ["mapcidr"]=" github.com/projectdiscovery/mapcidr/cmd/mapcidr"
+        ["chaos"]=" github.com/projectdiscovery/chaos-client/cmd/chaos"
+        ["gotator"]=" github.com/Josue87/gotator"
+        ["cero"]=" github.com/glebarez/cero"
+        ["galer"]=" github.com/dwisiswant0/galer"
+        ["haktrails"]=" github.com/hakluke/haktrails"
+        ["quickcert"]=" github.com/c3l3si4n/quickcert@HEAD"
+        ["alterx"]=" github.com/projectdiscovery/alterx/cmd/alterx"
+        ["ffuf"]=" github.com/ffuf/ffuf/v2"
+        ["socialhunter"]=" github.com/utkusen/socialhunter"
+        ["asnmap"]=" github.com/projectdiscovery/asnmap/cmd/asnmap"
+        ["oam_subs"]=" github.com/owasp-amass/oam-tools/cmd/oam_subs"
+        ["subjs"]=" github.com/lc/subjs"
     )
 
-    BIN_PATH="$HOME/go/bin"
 
-    for TOOL in "${TOOLS[@]}"; do
-        BINARY_NAME=$(basename "$(echo "$TOOL" | cut -d'@' -f1)")
-        if [[ ! -f "$BIN_PATH/$BINARY_NAME" ]]; then
-            echo -e "$notify ${RED}*${GREEN}[${YELLOW}$BINARY_NAME ${GREEN}is not installed${GREEN}]${RED}*"
-            go install -v "$TOOL"
+    # Go binaries
+    BIN_PATH="$HOME/go/bin"
+    total_tools=0
+    installed_tools=0
+    not_installed_tools=()
+
+    for TOOL in "${!tools[@]}"; do
+        TOOL_PATH="$BIN_PATH/$TOOL"
+        TOOL_URL="${tools[$TOOL]}"
+        total_tools=$((total_tools + 1))
+
+        if [[ ! -f "$TOOL_PATH" ]]; then
+            echo -e "${info} ${RED}*${GREEN}[${RED}${TOOL} ${GREEN}is not installed. installing....${GREEN}]${RED}*"
+            go install -v ${TOOL_URL}@latest > /dev/null 2>&1
+
+            if [[ $? -ne 0 ]]; then
+                echo -e "${info} ${RED}*${GREEN}[${RED}${TOOL} ${GREEN} installation failed, retrying with GO111MODULE=on...${GREEN}]${RED}*"
+                GO111MODULE=on go install -v ${TOOL_URL}@latest > /dev/null 2>&1
+            fi
+
+            if [[ $? -ne 0 ]]; then
+                echo -e "${info} ${RED}*${GREEN}[${RED}${TOOL} ${GREEN} installation failed, retrying with go get...${GREEN}]${RED}*"
+                go get ${TOOL_URL} > /dev/null 2>&1
+            fi
+
+            if [[ ! -f "$TOOL_PATH" ]]; then
+                echo -e "${info} ${RED}*${GREEN}[${RED}${TOOL} ${GREEN}  installation failed again, retrying with GO111MODULE=on go get...${GREEN}]${RED}*"
+                GO111MODULE=on go get ${TOOL_URL} > /dev/null 2>&1
+            fi
+
+            if [[ -f "$TOOL_PATH" ]]; then
+                installed_tools=$((installed_tools + 1))
+            else
+                not_installed_tools+=("$TOOL")
+            fi
         else
-            echo -e "${WHITE}[-${YELLOW}Info${WHITE}-] ${RED}*${GREEN}[${YELLOW}$BINARY_NAME ${GREEN}is already installed${GREEN}]${RED}*"
+            echo -e "${WHITE}[-${YELLOW}Info${WHITE}-] ${RED}*${GREEN}[${YELLOW}${TOOL} ${GREEN}is already installed${GREEN}]${RED}*"
         fi
     done
+
+    echo -e "${WHITE}[-${YELLOW}Summary${WHITE}-] ${RED}*${GREEN}[${YELLOW}Total tools: $total_tools, Installed tools: $installed_tools${GREEN}]${RED}*"
+    if [[ ${#not_installed_tools[@]} -gt 0 ]]; then
+        echo -e "${WHITE}[-${YELLOW}Not Installed${WHITE}-] ${RED}*${GREEN}[${RED}${not_installed_tools[@]}${GREEN}]${RED}*"
+    fi
 }
+
+
+
+
 
 
 
@@ -287,7 +325,7 @@ show_help() {
     echo -e "${RED}\______   \__ __  ____   \______   \ ____  __ __  _____/  |_ ___.__."
     echo -e "${RED} |    |  _/  |  \/ ___\   |    |  _//  _ \|  |  \/    \   __<   |  |"
     echo -e "${RED} |    |   \  |  / /_/  >  |    |   (  <_> )  |  /   |  \  |  \___  |"
-    echo -e "${RED} |______  /____/\___  /   |______  /\____/|____/|___|  /__|  / ____| [v1] ${GREEN}[@nahid0x1]"
+    echo -e "${RED} |______  /____/\___  /   |______  /\____/|____/|___|  /__|  / ____| [v2] ${GREEN}[@nahid0x1]"
     echo -e "${RED}        \/     /_____/           \/                  \/      \/     "
     echo -e "${WHITE}"
     echo -e "\nUsage: $name [OPTIONS]"
