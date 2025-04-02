@@ -65,7 +65,7 @@ bash install.sh --python
 bash install.sh --python-alter
 ```
 
-7. **Install Tools at once**:
+8. **Install Tools at once**:
 ```bash
 bash install.sh --linux or mac --golang --python or python-alter
 ```
