@@ -72,6 +72,7 @@ requirement_linux(){
         python3
         python3-pip
         golang
+        massdns
         snap
         knockpy
         sublist3r
@@ -96,7 +97,7 @@ requirement_linux(){
     )
 
     for tool in "${requirement_tools[@]}"; do
-        echo -e "${info} ${RED}*${GREEN}[${RED}$tool ${GREEN}is not installed. Installing...${GREEN}]${RED}*"
+        echo -e "${info} ${RED}*${GREEN}[${RED}$tool ${GREEN}is not installed. Installing...${GREEN}]${RED}*${GREEN}"
         sudo apt install -y  "$tool"
     done
 
