@@ -2,7 +2,7 @@
 
 #script info
 author="@nahid0x1"
-version="v2"
+version="v3"
 
 #colors
 BLACK='\033[0;30m'
@@ -22,11 +22,72 @@ path=("~/websec")
 mkdir -p ~/websec
 mkdir -p ~/websec/tools
 
+# --- Golang Tools list ---
+declare -A GOLANG_TOOLS=(
+    ["notify"]="github.com/projectdiscovery/notify/cmd/notify"
+    ["tok"]="github.com/mrco24/tok"
+    ["gau"]="github.com/lc/gau"
+    ["anti-burl"]="github.com/tomnomnom/hacks/anti-burl"
+    ["unfurl"]="github.com/tomnomnom/unfurl"
+    ["anew"]="github.com/tomnomnom/anew"
+    ["fff"]="github.com/tomnomnom/fff"
+    ["subzy"]="github.com/PentestPad/subzy"
+    ["gron"]="github.com/tomnomnom/gron"
+    ["qsreplace"]="github.com/tomnomnom/qsreplace"
+    ["cf-check"]="github.com/dwisiswant0/cf-check"
+    ["Jeeves"]="github.com/ferreiraklet/Jeeves"
+    ["time-sql"]="github.com/mrco24/time-sql"
+    ["mrco24-error-sql"]="github.com/mrco24/mrco24-error-sql"
+    ["nuclei"]="github.com/projectdiscovery/nuclei/v3/cmd/nuclei"
+    ["cent"]="github.com/xm1k3/cent"
+    ["afrog"]="github.com/zan8in/afrog/v2/cmd/afrog"
+    ["getJS"]="github.com/003random/getJS"
+    ["mantra"]="github.com/Brosck/mantra"
+    ["bxss"]="github.com/ethicalhackingplayground/bxss/v2/cmd/bxss"
+    ["Gxss"]="github.com/KathanP19/Gxss"
+    ["kxss"]="github.com/Emoe/kxss"
+    ["dalfox"]="github.com/hahwul/dalfox/v2"
+    ["interactsh-client"]="github.com/projectdiscovery/interactsh/cmd/interactsh-client"
+    ["open-redirect"]="github.com/mrco24/open-redirect"
+    ["mrco24-lfi"]="github.com/mrco24/mrco24-lfi"
+    ["naabu"]="github.com/projectdiscovery/naabu/v2/cmd/naabu"
+    ["gowitness"]="github.com/sensepost/gowitness"
+    ["httpx"]="github.com/projectdiscovery/httpx/cmd/httpx"
+    ["httprobe"]="github.com/tomnomnom/httprobe"
+    ["gospider"]="github.com/jaeles-project/gospider"
+    ["hakrawler"]="github.com/hakluke/hakrawler"
+    ["waybackurls"]="github.com/tomnomnom/waybackurls"
+    ["katana"]="github.com/projectdiscovery/katana/cmd/katana"
+    ["parameters"]="github.com/mrco24/parameters"
+    ["gf"]="github.com/tomnomnom/gf"
+    ["web-archive"]="github.com/mrco24/web-archive"
+    ["otx-url"]="github.com/mrco24/otx-url"
+    ["dnsx"]="github.com/projectdiscovery/dnsx/cmd/dnsx"
+    ["puredns"]="github.com/d3mondev/puredns/v2"
+    ["shuffledns"]="github.com/projectdiscovery/shuffledns/cmd/shuffledns"
+    ["subfinder"]="github.com/projectdiscovery/subfinder/v2/cmd/subfinder"
+    ["assetfinder"]="github.com/tomnomnom/assetfinder"
+    ["github-subdomains"]="github.com/gwen001/github-subdomains"
+    ["amass"]="github.com/owasp-amass/amass/v4/..."
+    ["crobat"]="github.com/cgboal/sonarsearch/cmd/crobat"
+    ["mapcidr"]="github.com/projectdiscovery/mapcidr/cmd/mapcidr"
+    ["chaos"]="github.com/projectdiscovery/chaos-client/cmd/chaos"
+    ["gotator"]="github.com/Josue87/gotator"
+    ["cero"]="github.com/glebarez/cero"
+    ["galer"]="github.com/dwisiswant0/galer"
+    ["haktrails"]="github.com/hakluke/haktrails"
+    ["quickcert"]="github.com/c3l3si4n/quickcert@HEAD"
+    ["alterx"]="github.com/projectdiscovery/alterx/cmd/alterx"
+    ["ffuf"]="github.com/ffuf/ffuf/v2"
+    ["socialhunter"]="github.com/utkusen/socialhunter"
+    ["asnmap"]="github.com/projectdiscovery/asnmap/cmd/asnmap"
+    ["oam_subs"]="github.com/owasp-amass/oam-tools/cmd/oam_subs"
+    ["subjs"]="github.com/lc/subjs"
+)
 
 
 #requirement for mac
 requirement_mac(){
-
     brew update 
     brew upgrade
     brew install golang
@@ -46,7 +107,7 @@ requirement_mac(){
     )
 
     # Check tools
-    for tool in "${required_tools[@]}"; do
+    for tool in "${requirement_tools[@]}"; do
         if ! command -v $tool &>/dev/null; then
             echo -e "${info} ${RED}*${GREEN}[${RED}$tool ${GREEN}is not installed. Installing...${GREEN}]${RED}*"
             brew install $tool
@@ -57,16 +118,14 @@ requirement_mac(){
 
     echo 'export PATH="$PATH:~/go/bin"' >> ~/.bashrc
     echo 'export PATH="$PATH:~/go/bin"' >> ~/.zshrc
-
 }
 
 #requirement for linux
 requirement_linux(){
-
-    apt update 
-    apt upgrade -y
-    apt remove --purge golang -y 
-    apt install libldns-dev -y 
+    sudo apt update 
+    sudo apt upgrade -y
+    sudo apt remove --purge golang -y 
+    sudo apt install libldns-dev -y 
 
     requirement_tools=(
         python3
@@ -101,94 +160,21 @@ requirement_linux(){
         sudo apt install -y  "$tool"
     done
 
-
     echo 'export PATH="$PATH:~/go/bin"' >> ~/.bashrc
     echo 'export PATH="$PATH:~/go/bin"' >> ~/.zshrc
-
 }
 
-
-
-
-
-
-
-
-# golang tools
+# golang tools installation
 golang_tools() {
-
-    declare -A tools=(
-        ["notify"]=" github.com/projectdiscovery/notify/cmd/notify"
-        ["tok"]=" github.com/mrco24/tok"
-        ["gau"]=" github.com/lc/gau"
-        ["anti-burl"]=" github.com/tomnomnom/hacks/anti-burl"
-        ["unfurl"]=" github.com/tomnomnom/unfurl"
-        ["anew"]=" github.com/tomnomnom/anew"
-        ["fff"]=" github.com/tomnomnom/fff"
-        ["subzy"]=" github.com/PentestPad/subzy"
-        ["gron"]=" github.com/tomnomnom/gron"
-        ["qsreplace"]=" github.com/tomnomnom/qsreplace"
-        ["cf-check"]=" github.com/dwisiswant0/cf-check"
-        ["Jeeves"]=" github.com/ferreiraklet/Jeeves"
-        ["time-sql"]=" github.com/mrco24/time-sql"
-        ["mrco24-error-sql"]=" github.com/mrco24/mrco24-error-sql"
-        ["nuclei"]=" github.com/projectdiscovery/nuclei/v3/cmd/nuclei"
-        ["cent"]=" github.com/xm1k3/cent"
-        ["afrog"]=" github.com/zan8in/afrog/v2/cmd/afrog"
-        ["getJS"]=" github.com/003random/getJS"
-        ["mantra"]=" github.com/Brosck/mantra"
-        ["bxss"]=" github.com/ethicalhackingplayground/bxss/v2/cmd/bxss"
-        ["Gxss"]=" github.com/KathanP19/Gxss"
-        ["kxss"]=" github.com/Emoe/kxss"
-        ["dalfox"]=" github.com/hahwul/dalfox/v2"
-        ["interactsh-client"]=" github.com/projectdiscovery/interactsh/cmd/interactsh-client"
-        ["open-redirect"]=" github.com/mrco24/open-redirect"
-        ["mrco24-lfi"]=" github.com/mrco24/mrco24-lfi"
-        ["naabu"]=" github.com/projectdiscovery/naabu/v2/cmd/naabu"
-        ["gowitness"]=" github.com/sensepost/gowitness"
-        ["httpx"]=" github.com/projectdiscovery/httpx/cmd/httpx"
-        ["httprobe"]=" github.com/tomnomnom/httprobe"
-        ["gospider"]=" github.com/jaeles-project/gospider"
-        ["hakrawler"]=" github.com/hakluke/hakrawler"
-        ["waybackurls"]=" github.com/tomnomnom/waybackurls"
-        ["katana"]=" github.com/projectdiscovery/katana/cmd/katana"
-        ["parameters"]=" github.com/mrco24/parameters"
-        ["gf"]=" github.com/tomnomnom/gf"
-        ["web-archive"]=" github.com/mrco24/web-archive"
-        ["otx-url"]=" github.com/mrco24/otx-url"
-        ["dnsx"]=" github.com/projectdiscovery/dnsx/cmd/dnsx"
-        ["puredns"]=" github.com/d3mondev/puredns/v2"
-        ["shuffledns"]=" github.com/projectdiscovery/shuffledns/cmd/shuffledns"
-        ["subfinder"]=" github.com/projectdiscovery/subfinder/v2/cmd/subfinder"
-        ["assetfinder"]=" github.com/tomnomnom/assetfinder"
-        ["github-subdomains"]=" github.com/gwen001/github-subdomains"
-        ["amass"]=" github.com/owasp-amass/amass/v4/..."
-        ["crobat"]=" github.com/cgboal/sonarsearch/cmd/crobat"
-        ["mapcidr"]=" github.com/projectdiscovery/mapcidr/cmd/mapcidr"
-        ["chaos"]=" github.com/projectdiscovery/chaos-client/cmd/chaos"
-        ["gotator"]=" github.com/Josue87/gotator"
-        ["cero"]=" github.com/glebarez/cero"
-        ["galer"]=" github.com/dwisiswant0/galer"
-        ["haktrails"]=" github.com/hakluke/haktrails"
-        ["quickcert"]=" github.com/c3l3si4n/quickcert@HEAD"
-        ["alterx"]=" github.com/projectdiscovery/alterx/cmd/alterx"
-        ["ffuf"]=" github.com/ffuf/ffuf/v2"
-        ["socialhunter"]=" github.com/utkusen/socialhunter"
-        ["asnmap"]=" github.com/projectdiscovery/asnmap/cmd/asnmap"
-        ["oam_subs"]=" github.com/owasp-amass/oam-tools/cmd/oam_subs"
-        ["subjs"]=" github.com/lc/subjs"
-    )
-
-
     # Go binaries
     BIN_PATH="$HOME/go/bin"
     total_tools=0
     installed_tools=0
     not_installed_tools=()
 
-    for TOOL in "${!tools[@]}"; do
+    for TOOL in "${!GOLANG_TOOLS[@]}"; do
         TOOL_PATH="$BIN_PATH/$TOOL"
-        TOOL_URL="${tools[$TOOL]}"
+        TOOL_URL="${GOLANG_TOOLS[$TOOL]}"
         total_tools=$((total_tools + 1))
 
         if [[ ! -f "$TOOL_PATH" ]]; then
@@ -226,107 +212,127 @@ golang_tools() {
     fi
 }
 
-
-
-
-
-
-
-
-
+# Update multiple Go Tools from a comma-separated list
+update_golang_tools() {
+    local tool_list_string="$1"
+    
+    # Save the original IFS and set it to a comma to split the string
+    local OLD_IFS=$IFS
+    IFS=','
+    
+    # Loop through each tool name provided in the string
+    for tool_to_update in $tool_list_string; do
+        # Check if the tool exists in our list (GOLANG_TOOLS array)
+        if [[ -v "GOLANG_TOOLS[$tool_to_update]" ]]; then
+            local tool_url="${GOLANG_TOOLS[$tool_to_update]}"
+            echo -e "${info} ${CYAN}Attempting to update '${tool_to_update}'...${WHITE}"
+            
+            # Force re-installation by running the install command again with the @latest tag
+            go install -v "${tool_url}@latest"
+            
+            if [[ $? -eq 0 ]]; then
+                echo -e "${info} ${GREEN}'${tool_to_update}' has been successfully updated/re-installed to the latest version.${WHITE}"
+            else
+                echo -e "${info} ${RED}Failed to update '${tool_to_update}'. Please check for errors.${WHITE}"
+            fi
+        else
+            echo -e "${info} ${RED}Error: Tool '${tool_to_update}' is not found in the script's list.${WHITE}"
+            echo -e "${info} ${YELLOW}Please make sure you typed the name correctly.${WHITE}"
+        fi
+        echo -e "${PURPLE}--------------------------------------------------${WHITE}"
+    done
+    
+    # Restore the original IFS
+    IFS=$OLD_IFS
+}
 
 #python pip3
 python_tools(){
     pip3 install uro
     pip3 install subcat
 
-
     #GF Patterns Setup
-    rm -rf  ~/.gf Gf Gf-Patterns
-    git clone https://github.com/1ndianl33t/Gf-Patterns
-    git clone https://github.com/tomnomnom/Gf
-    rm -rf  ~/.gf 
-    mkdir -p ~/.gf && cd ~/Gf/examples && mv * ~/.gf && cd ~/Gf-Patterns && mv * ~/.gf
+    rm -rf  ~/.gf ~/Gf ~/Gf-Patterns
+    echo -e "${info} Setting up GF patterns..."
+    git clone https://github.com/1ndianl33t/Gf-Patterns.git ~/Gf-Patterns > /dev/null 2>&1
+    git clone https://github.com/tomnomnom/Gf.git ~/Gf > /dev/null 2>&1
+    mkdir -p ~/.gf
+    cp ~/Gf/examples/* ~/.gf
+    cp ~/Gf-Patterns/* ~/.gf
+    echo -e "${info} GF patterns setup completed."
 
     #findomain install
-    mkdir -p $path/tools/findomain
-    cd $path/tools/findomain
+    echo -e "${info} Installing findomain..."
+    mkdir -p "$path/tools/findomain"
+    cd "$path/tools/findomain"
     curl -LO https://github.com/findomain/findomain/releases/latest/download/findomain-linux.zip
-    unzip $path/tools/findomain/findomain-linux.zip
-    chmod +x $path/tools/findomain/findomain 
-    sudo mv $path/tools/findomain/findomain /usr/bin/findomain 
+    unzip -o findomain-linux.zip # Use -o to overwrite without prompting
+    chmod +x findomain 
+    sudo mv findomain /usr/local/bin/findomain 
 
+    echo -e "${info} Installing SecretFinder..."
+    git clone https://github.com/m4ll0k/SecretFinder.git "$path/tools/secretfinder" 
+    pip3 install -r "$path/tools/secretfinder/requirements.txt"
 
+    echo -e "${info} Installing xnLinkFinder..."
+    git clone https://github.com/xnl-h4ck3r/xnLinkFinder.git "$path/tools/xnLinkFinder" 
+    cd "$path/tools/xnLinkFinder" 
+    sudo python3 setup.py install 
 
-    git clone https://github.com/m4ll0k/SecretFinder.git $path/tools/secretfinder 
-    cd $path/tools/secretfinder 
-    pip3 install -r $path/tools/secretfinder/requirements.txt
+    echo -e "${info} Installing paramspider..."
+    git clone https://github.com/devanshbatham/paramspider "$path/tools/paramspider" 
+    pip3 install "$path/tools/paramspider/."
 
-    git clone https://github.com/xnl-h4ck3r/xnLinkFinder.git $path/tools/xnLinkFinder 
-    cd $path/tools/xnLinkFinder 
-    sudo python3 $path/tools/xnLinkFinder/setup.py install 
-
-    git clone https://github.com/devanshbatham/paramspider $path/tools/paramspider 
-    cd $path/tools/paramspider  
-    pip3 install $path/tools/paramspider/.
-
-
-    git clone --recursive https://github.com/screetsec/Sudomy.git $path/tools/Sudomy
-    cd $path/tools/Sudomy
-    pip3 install -r $path/tools/Sudomy/requirements.txt
-    
+    echo -e "${info} Installing Sudomy..."
+    git clone --recursive https://github.com/screetsec/Sudomy.git "$path/tools/Sudomy"
+    pip3 install -r "$path/tools/Sudomy/requirements.txt"
 }
-
-
-
-
-
 
 #python pip3 alternate
 python_alternate(){
     pip3 install uro --break-system-packages
     pip3 install subcat --break-system-packages
 
-
     #GF Patterns Setup
-    rm -rf  ~/.gf Gf Gf-Patterns
-    git clone https://github.com/1ndianl33t/Gf-Patterns
-    git clone https://github.com/tomnomnom/Gf
-    rm -rf  ~/.gf 
-    mkdir -p ~/.gf && cd ~/Gf/examples && mv * ~/.gf && cd ~/Gf-Patterns && mv * ~/.gf
+    rm -rf  ~/.gf ~/Gf ~/Gf-Patterns
+    echo -e "${info} Setting up GF patterns..."
+    git clone https://github.com/1ndianl33t/Gf-Patterns.git ~/Gf-Patterns > /dev/null 2>&1
+    git clone https://github.com/tomnomnom/Gf.git ~/Gf > /dev/null 2>&1
+    mkdir -p ~/.gf
+    cp ~/Gf/examples/* ~/.gf
+    cp ~/Gf-Patterns/* ~/.gf
+    echo -e "${info} GF patterns setup completed."
 
     #findomain install
-    mkdir -p $path/tools/findomain
-    cd $path/tools/findomain
+    echo -e "${info} Installing findomain..."
+    mkdir -p "$path/tools/findomain"
+    cd "$path/tools/findomain"
     curl -LO https://github.com/findomain/findomain/releases/latest/download/findomain-linux.zip
-    unzip $path/tools/findomain/findomain-linux.zip
-    chmod +x $path/tools/findomain/findomain 
-    sudo mv $path/tools/findomain/findomain /usr/bin/findomain 
+    unzip -o findomain-linux.zip
+    chmod +x findomain 
+    sudo mv findomain /usr/local/bin/findomain
 
+    echo -e "${info} Installing SecretFinder..."
+    git clone https://github.com/m4ll0k/SecretFinder.git "$path/tools/secretfinder"
+    pip3 install -r "$path/tools/secretfinder/requirements.txt" --break-system-packages
 
+    echo -e "${info} Installing xnLinkFinder..."
+    git clone https://github.com/xnl-h4ck3r/xnLinkFinder.git "$path/tools/xnLinkFinder"
+    cd "$path/tools/xnLinkFinder"
+    sudo python3 setup.py install
 
-    git clone https://github.com/m4ll0k/SecretFinder.git $path/tools/secretfinder 
-    cd $path/tools/secretfinder 
-    pip3 install -r $path/tools/secretfinder/requirements.txt --break-system-packages
+    echo -e "${info} Installing paramspider..."
+    git clone https://github.com/devanshbatham/paramspider "$path/tools/paramspider"
+    pip3 install "$path/tools/paramspider/." --break-system-packages
 
-    git clone https://github.com/xnl-h4ck3r/xnLinkFinder.git $path/tools/xnLinkFinder 
-    cd $path/tools/xnLinkFinder 
-    sudo python3 $path/tools/xnLinkFinder/setup.py install 
-
-    git clone https://github.com/devanshbatham/paramspider $path/tools/paramspider 
-    cd $path/tools/paramspider  
-    pip3 install $path/tools/paramspider/. --break-system-packages
-
-
-    git clone --recursive https://github.com/screetsec/Sudomy.git $path/tools/Sudomy
-    cd $path/tools/Sudomy
-    pip3 install -r $path/tools/Sudomy/requirements.txt --break-system-packages
+    echo -e "${info} Installing Sudomy..."
+    git clone --recursive https://github.com/screetsec/Sudomy.git "$path/tools/Sudomy"
+    pip3 install -r "$path/tools/Sudomy/requirements.txt" --break-system-packages
 }
-
 
 #help screen
 show_help() {
-    name=$0
+    name=$(basename "$0")
 
     echo -e "${RED}__________               __________                     __          "
     echo -e "${RED}\______   \__ __  ____   \______   \ ____  __ __  _____/  |_ ___.__."
@@ -337,12 +343,14 @@ show_help() {
     echo -e "${WHITE}"
     echo -e "\nUsage: $name [OPTIONS]"
     echo "Options:"
-    echo "  --mac           Install tools for macOS"
-    echo "  --linux         Install tools for Linux"
-    echo "  --golang        Install Go tools"
-    echo "  --python        Install Python tools"
-    echo "  --python-alter  Install Python tools (alternate method if error)"
-    echo "  --help          Show this help screen"
+    echo "  --mac               Install tools for macOS"
+    echo "  --linux             Install tools for Linux"
+    echo "  --golang            Install all Go tools"
+    echo "  --python            Install Python tools"
+    echo "  --python-alter      Install Python tools (alternate method if error)"
+    echo "  --update [tool1,tool2,...]  Update specific Go tools from a comma-separated list."
+    echo "                              Example: $name --update nuclei,subfinder,httpx"
+    echo "  --help              Show this help screen"
     exit 1
 }
 
@@ -351,7 +359,7 @@ if [[ $# -eq 0 ]]; then
     show_help
 fi
 
-# main
+# main argument parsing loop
 while [[ $# -gt 0 ]]; do
     case "$1" in
         --mac) requirement_mac ;;
@@ -359,8 +367,17 @@ while [[ $# -gt 0 ]]; do
         --golang) golang_tools ;;
         --python) python_tools ;;
         --python-alter) python_alternate ;;
+        --update)
+            if [[ -z "$2" || "$2" == --* ]]; then
+                echo -e "${RED}Error: --update flag requires a comma-separated list of tool names.${WHITE}" >&2
+                show_help
+                exit 1
+            fi
+            update_golang_tools "$2"
+            shift # Consume tool_list argument
+            ;;
         --help) show_help ;;
         *) echo "Unknown option: $1"; show_help ;;
     esac
-    shift
+    shift # Consume the current argument
 done
