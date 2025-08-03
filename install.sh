@@ -22,7 +22,7 @@ path=("~/websec")
 mkdir -p ~/websec
 mkdir -p ~/websec/tools
 
-# --- Golang Tools list  ---
+# --- Golang Tools list (Global) ---
 declare -A GOLANG_TOOLS=(
     ["notify"]="github.com/projectdiscovery/notify/cmd/notify"
     ["tok"]="github.com/mrco24/tok"
@@ -111,31 +111,66 @@ requirement_mac(){
     echo 'export PATH="$PATH:~/go/bin"' >> ~/.zshrc
 }
 
-#requirement for linux
+# Linux requirements function with live status for APT packages
 requirement_linux(){
-    sudo apt update 
+    echo -e "${info} ${CYAN}Updating package lists...${WHITE}"
+    sudo apt update
+    echo -e "${info} ${CYAN}Upgrading installed packages...${WHITE}"
     sudo apt upgrade -y
-    sudo apt remove --purge golang -y 
-    sudo apt install libldns-dev -y 
+    
+    # Essential build tools and libraries
+    sudo apt install -y libldns-dev build-essential
 
     requirement_tools=(
-        python3 python3-pip golang massdns snap knockpy sublist3r host nmap
-        photon arjun dirbuster dig dirb cewl feroxbuster jq npm chromium
-        fish parallel tmux unzip make gcc
+        python3 python3-pip golang massdns snapd knockpy sublist3r host nmap
+        photon arjun dirbuster dig dnsutils dirb cewl feroxbuster jq npm
+        chromium-browser fish parallel tmux unzip make gcc
     )
+    # Note: 'host' and 'dig' are often in the 'dnsutils' or 'bind9-utils' package. 'snap' command is in 'snapd'.
+
+    installed_count=0
+    failed_tools=()
+    total_count=${#requirement_tools[@]}
+
+    echo -e "${info} ${CYAN}Starting installation of APT packages...${WHITE}"
+    echo -e "${PURPLE}--------------------------------------------------${WHITE}"
 
     for tool in "${requirement_tools[@]}"; do
-        echo -e "${info} ${RED}*${GREEN}[${RED}$tool ${GREEN}is not installed. Installing...${GREEN}]${RED}*${GREEN}"
-        sudo apt install -y  "$tool"
+        # Check if the package is already installed using dpkg
+        if dpkg -s "$tool" &> /dev/null; then
+            echo -e "${info} ${YELLOW}${tool} is already installed. ${GREEN}[SKIPPED]${WHITE}"
+        else
+            echo -en "${info} ${CYAN}Installing ${tool}... ${WHITE}"
+            
+            # Install the package, redirecting output to keep the console clean
+            sudo apt install -y "$tool" > /dev/null 2>&1
+            
+            # Check the exit code of the last command to determine success or failure
+            if [[ $? -eq 0 ]]; then
+                echo -e "${GREEN}[INSTALLED]${WHITE}"
+                ((installed_count++))
+            else
+                echo -e "${RED}[FAILED]${WHITE}"
+                failed_tools+=("$tool")
+            fi
+        fi
     done
+    
+    echo -e "${PURPLE}--------------------------------------------------${WHITE}"
+    echo -e "${WHITE}[-${YELLOW}Summary${WHITE}-] ${GREEN}APT package installation finished.${WHITE}"
+    echo -e "${WHITE}[-${YELLOW}Summary${WHITE}-] ${YELLOW}Total packages checked: $total_count, Newly installed: $installed_count${WHITE}"
+    if [[ ${#failed_tools[@]} -gt 0 ]]; then
+        echo -e "${WHITE}[-${YELLOW}Failed Packages${WHITE}-] ${RED}The following could not be installed: ${failed_tools[@]}${WHITE}"
+    fi
 
     echo 'export PATH="$PATH:~/go/bin"' >> ~/.bashrc
     echo 'export PATH="$PATH:~/go/bin"' >> ~/.zshrc
+    echo -e "${info} ${GREEN}Go binary path added to .bashrc and .zshrc. Please restart your terminal or run 'source ~/.bashrc'/'source ~/.zshrc'.${WHITE}"
 }
+
 
 # golang tools installation with live status
 golang_tools() {
-    # Go binaries path
     BIN_PATH="$HOME/go/bin"
     total_tools=0
     installed_tools=0
@@ -149,28 +184,17 @@ golang_tools() {
         TOOL_URL="${GOLANG_TOOLS[$TOOL]}"
         total_tools=$((total_tools + 1))
 
-        # Check if the tool is already installed
         if [[ -f "$TOOL_PATH" ]]; then
             echo -e "${info} ${YELLOW}${TOOL} is already present. ${GREEN}[SKIPPED]${WHITE}"
         else
-            # Print the "Installing..." message without a newline using 'echo -en'
             echo -en "${info} ${CYAN}Installing ${TOOL}... ${WHITE}"
             
-            # Attempt to install, redirecting verbose output to /dev/null
             go install -v ${TOOL_URL}@latest > /dev/null 2>&1
             
-            # Fallback attempts if the first one fails
-            if [[ ! -f "$TOOL_PATH" ]]; then
-                GO111MODULE=on go install -v ${TOOL_URL}@latest > /dev/null 2>&1
-            fi
-            if [[ ! -f "$TOOL_PATH" ]]; then
-                go get ${TOOL_URL} > /dev/null 2>&1
-            fi
-            if [[ ! -f "$TOOL_PATH" ]]; then
-                GO111MODULE=on go get ${TOOL_URL} > /dev/null 2>&1
-            fi
+            if [[ ! -f "$TOOL_PATH" ]]; then GO111MODULE=on go install -v ${TOOL_URL}@latest > /dev/null 2>&1; fi
+            if [[ ! -f "$TOOL_PATH" ]]; then go get ${TOOL_URL} > /dev/null 2>&1; fi
+            if [[ ! -f "$TOOL_PATH" ]]; then GO111MODULE=on go get ${TOOL_URL} > /dev/null 2>&1; fi
 
-            # Check for success and print the final status on the same line
             if [[ -f "$TOOL_PATH" ]]; then
                 echo -e "${GREEN}[INSTALLED]${WHITE}"
                 installed_tools=$((installed_tools + 1))
@@ -182,7 +206,7 @@ golang_tools() {
     done
 
     echo -e "${PURPLE}--------------------------------------------------${WHITE}"
-    echo -e "${WHITE}[-${YELLOW}Summary${WHITE}-] ${GREEN}Installation process finished.${WHITE}"
+    echo -e "${WHITE}[-${YELLOW}Summary${WHITE}-] ${GREEN}Go tools installation process finished.${WHITE}"
     echo -e "${WHITE}[-${YELLOW}Summary${WHITE}-] ${YELLOW}Total tools checked: $total_tools, Newly installed: $installed_tools${WHITE}"
     if [[ ${#not_installed_tools[@]} -gt 0 ]]; then
         echo -e "${WHITE}[-${YELLOW}Failed Tools${WHITE}-] ${RED}The following tools could not be installed: ${not_installed_tools[@]}${WHITE}"
@@ -193,60 +217,44 @@ golang_tools() {
 # Update multiple Go Tools from a comma-separated list
 update_golang_tools() {
     local tool_list_string="$1"
-    
-    # Save the original IFS and set it to a comma to split the string
     local OLD_IFS=$IFS
     IFS=','
     
-    # Loop through each tool name provided in the string
     for tool_to_update in $tool_list_string; do
-        # Check if the tool exists in our list (GOLANG_TOOLS array)
         if [[ -v "GOLANG_TOOLS[$tool_to_update]" ]]; then
             local tool_url="${GOLANG_TOOLS[$tool_to_update]}"
             echo -e "${info} ${CYAN}Attempting to update '${tool_to_update}'...${WHITE}"
             
-            # Force re-installation by running the install command again with the @latest tag
             go install -v "${tool_url}@latest"
             
             if [[ $? -eq 0 ]]; then
-                echo -e "${info} ${GREEN}'${tool_to_update}' has been successfully updated/re-installed to the latest version.${WHITE}"
+                echo -e "${info} ${GREEN}'${tool_to_update}' has been successfully updated/re-installed.${WHITE}"
             else
-                echo -e "${info} ${RED}Failed to update '${tool_to_update}'. Please check for errors.${WHITE}"
+                echo -e "${info} ${RED}Failed to update '${tool_to_update}'.${WHITE}"
             fi
         else
-            echo -e "${info} ${RED}Error: Tool '${tool_to_update}' is not found in the script's list.${WHITE}"
-            echo -e "${info} ${YELLOW}Please make sure you typed the name correctly.${WHITE}"
+            echo -e "${info} ${RED}Error: Tool '${tool_to_update}' not found in the list.${WHITE}"
         fi
         echo -e "${PURPLE}--------------------------------------------------${WHITE}"
     done
-    
-    # Restore the original IFS
     IFS=$OLD_IFS
 }
 
 #python pip3
 python_tools(){
-    pip3 install uro
-    pip3 install subcat
+    pip3 install uro subcat
 
-    #GF Patterns Setup
     rm -rf  ~/.gf ~/Gf ~/Gf-Patterns
     echo -e "${info} Setting up GF patterns..."
     git clone https://github.com/1ndianl33t/Gf-Patterns.git ~/Gf-Patterns > /dev/null 2>&1
     git clone https://github.com/tomnomnom/Gf.git ~/Gf > /dev/null 2>&1
-    mkdir -p ~/.gf
-    cp ~/Gf/examples/* ~/.gf
-    cp ~/Gf-Patterns/* ~/.gf
+    mkdir -p ~/.gf && cp ~/Gf/examples/* ~/.gf && cp ~/Gf-Patterns/* ~/.gf
     echo -e "${info} GF patterns setup completed."
 
-    #findomain install
     echo -e "${info} Installing findomain..."
-    mkdir -p "$path/tools/findomain"
-    cd "$path/tools/findomain"
+    mkdir -p "$path/tools/findomain" && cd "$path/tools"
     curl -LO https://github.com/findomain/findomain/releases/latest/download/findomain-linux.zip
-    unzip -o findomain-linux.zip # Use -o to overwrite without prompting
-    chmod +x findomain 
-    sudo mv findomain /usr/local/bin/findomain 
+    unzip -o findomain-linux.zip && chmod +x findomain && sudo mv findomain /usr/local/bin/
 
     echo -e "${info} Installing SecretFinder..."
     git clone https://github.com/m4ll0k/SecretFinder.git "$path/tools/secretfinder" 
@@ -254,8 +262,7 @@ python_tools(){
 
     echo -e "${info} Installing xnLinkFinder..."
     git clone https://github.com/xnl-h4ck3r/xnLinkFinder.git "$path/tools/xnLinkFinder" 
-    cd "$path/tools/xnLinkFinder" 
-    sudo python3 setup.py install 
+    cd "$path/tools/xnLinkFinder" && sudo python3 setup.py install 
 
     echo -e "${info} Installing paramspider..."
     git clone https://github.com/devanshbatham/paramspider "$path/tools/paramspider" 
@@ -268,27 +275,19 @@ python_tools(){
 
 #python pip3 alternate
 python_alternate(){
-    pip3 install uro --break-system-packages
-    pip3 install subcat --break-system-packages
+    pip3 install uro subcat --break-system-packages
 
-    #GF Patterns Setup
     rm -rf  ~/.gf ~/Gf ~/Gf-Patterns
     echo -e "${info} Setting up GF patterns..."
     git clone https://github.com/1ndianl33t/Gf-Patterns.git ~/Gf-Patterns > /dev/null 2>&1
     git clone https://github.com/tomnomnom/Gf.git ~/Gf > /dev/null 2>&1
-    mkdir -p ~/.gf
-    cp ~/Gf/examples/* ~/.gf
-    cp ~/Gf-Patterns/* ~/.gf
+    mkdir -p ~/.gf && cp ~/Gf/examples/* ~/.gf && cp ~/Gf-Patterns/* ~/.gf
     echo -e "${info} GF patterns setup completed."
 
-    #findomain install
     echo -e "${info} Installing findomain..."
-    mkdir -p "$path/tools/findomain"
-    cd "$path/tools/findomain"
+    mkdir -p "$path/tools/findomain" && cd "$path/tools"
     curl -LO https://github.com/findomain/findomain/releases/latest/download/findomain-linux.zip
-    unzip -o findomain-linux.zip
-    chmod +x findomain 
-    sudo mv findomain /usr/local/bin/findomain
+    unzip -o findomain-linux.zip && chmod +x findomain && sudo mv findomain /usr/local/bin/
 
     echo -e "${info} Installing SecretFinder..."
     git clone https://github.com/m4ll0k/SecretFinder.git "$path/tools/secretfinder"
@@ -296,8 +295,7 @@ python_alternate(){
 
     echo -e "${info} Installing xnLinkFinder..."
     git clone https://github.com/xnl-h4ck3r/xnLinkFinder.git "$path/tools/xnLinkFinder"
-    cd "$path/tools/xnLinkFinder"
-    sudo python3 setup.py install
+    cd "$path/tools/xnLinkFinder" && sudo python3 setup.py install
 
     echo -e "${info} Installing paramspider..."
     git clone https://github.com/devanshbatham/paramspider "$path/tools/paramspider"
@@ -322,7 +320,7 @@ show_help() {
     echo -e "\nUsage: $name [OPTIONS]"
     echo "Options:"
     echo "  --mac                     Install tools for macOS"
-    echo "  --linux                   Install tools for Linux"
+    echo "  --linux                   Install Linux prerequisites with live status"
     echo "  --golang                  Install all Go tools with live status"
     echo "  --python                  Install Python tools"
     echo "  --python-alter            Install Python tools (alternate method if error)"
@@ -357,5 +355,5 @@ while [[ $# -gt 0 ]]; do
         --help) show_help ;;
         *) echo "Unknown option: $1"; show_help ;;
     esac
-    shift
+    shift # Consume the current argument
 done
