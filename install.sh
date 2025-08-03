@@ -70,6 +70,7 @@ requirement_linux(){
 
     requirement_tools=(
         python3
+        python3-pip
         golang
         snap
         knockpy
