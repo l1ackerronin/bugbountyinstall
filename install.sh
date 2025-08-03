@@ -22,7 +22,7 @@ path=("~/websec")
 mkdir -p ~/websec
 mkdir -p ~/websec/tools
 
-# --- Golang Tools list ---
+# --- Golang Tools list  ---
 declare -A GOLANG_TOOLS=(
     ["notify"]="github.com/projectdiscovery/notify/cmd/notify"
     ["tok"]="github.com/mrco24/tok"
@@ -94,16 +94,7 @@ requirement_mac(){
     brew install python3
 
     requirement_tools=(
-        nmap
-        jq
-        npm
-        chromium
-        fish
-        make
-        parallel
-        tmux
-        unzip
-        gcc
+        nmap jq npm chromium fish make parallel tmux unzip gcc
     )
 
     # Check tools
@@ -128,31 +119,9 @@ requirement_linux(){
     sudo apt install libldns-dev -y 
 
     requirement_tools=(
-        python3
-        python3-pip
-        golang
-        massdns
-        snap
-        knockpy
-        sublist3r
-        host
-        nmap
-        photon
-        arjun
-        dirbuster
-        dig
-        dirb
-        cewl
-        feroxbuster
-        jq
-        npm
-        chromium
-        fish
-        parallel
-        tmux
-        unzip
-        make
-        gcc
+        python3 python3-pip golang massdns snap knockpy sublist3r host nmap
+        photon arjun dirbuster dig dirb cewl feroxbuster jq npm chromium
+        fish parallel tmux unzip make gcc
     )
 
     for tool in "${requirement_tools[@]}"; do
@@ -164,53 +133,62 @@ requirement_linux(){
     echo 'export PATH="$PATH:~/go/bin"' >> ~/.zshrc
 }
 
-# golang tools installation
+# golang tools installation with live status
 golang_tools() {
-    # Go binaries
+    # Go binaries path
     BIN_PATH="$HOME/go/bin"
     total_tools=0
     installed_tools=0
     not_installed_tools=()
+
+    echo -e "${info} ${CYAN}Starting installation of Go tools...${WHITE}"
+    echo -e "${PURPLE}--------------------------------------------------${WHITE}"
 
     for TOOL in "${!GOLANG_TOOLS[@]}"; do
         TOOL_PATH="$BIN_PATH/$TOOL"
         TOOL_URL="${GOLANG_TOOLS[$TOOL]}"
         total_tools=$((total_tools + 1))
 
-        if [[ ! -f "$TOOL_PATH" ]]; then
-            echo -e "${info} ${RED}*${GREEN}[${RED}${TOOL} ${GREEN}is not installed. installing....${GREEN}]${RED}*"
+        # Check if the tool is already installed
+        if [[ -f "$TOOL_PATH" ]]; then
+            echo -e "${info} ${YELLOW}${TOOL} is already present. ${GREEN}[SKIPPED]${WHITE}"
+        else
+            # Print the "Installing..." message without a newline using 'echo -en'
+            echo -en "${info} ${CYAN}Installing ${TOOL}... ${WHITE}"
+            
+            # Attempt to install, redirecting verbose output to /dev/null
             go install -v ${TOOL_URL}@latest > /dev/null 2>&1
-
-            if [[ $? -ne 0 ]]; then
-                echo -e "${info} ${RED}*${GREEN}[${RED}${TOOL} ${GREEN} installation failed, retrying with GO111MODULE=on...${GREEN}]${RED}*"
+            
+            # Fallback attempts if the first one fails
+            if [[ ! -f "$TOOL_PATH" ]]; then
                 GO111MODULE=on go install -v ${TOOL_URL}@latest > /dev/null 2>&1
             fi
-
-            if [[ $? -ne 0 ]]; then
-                echo -e "${info} ${RED}*${GREEN}[${RED}${TOOL} ${GREEN} installation failed, retrying with go get...${GREEN}]${RED}*"
+            if [[ ! -f "$TOOL_PATH" ]]; then
                 go get ${TOOL_URL} > /dev/null 2>&1
             fi
-
             if [[ ! -f "$TOOL_PATH" ]]; then
-                echo -e "${info} ${RED}*${GREEN}[${RED}${TOOL} ${GREEN}  installation failed again, retrying with GO111MODULE=on go get...${GREEN}]${RED}*"
                 GO111MODULE=on go get ${TOOL_URL} > /dev/null 2>&1
             fi
 
+            # Check for success and print the final status on the same line
             if [[ -f "$TOOL_PATH" ]]; then
+                echo -e "${GREEN}[INSTALLED]${WHITE}"
                 installed_tools=$((installed_tools + 1))
             else
+                echo -e "${RED}[FAILED]${WHITE}"
                 not_installed_tools+=("$TOOL")
             fi
-        else
-            echo -e "${WHITE}[-${YELLOW}Info${WHITE}-] ${RED}*${GREEN}[${YELLOW}${TOOL} ${GREEN}is already installed${GREEN}]${RED}*"
         fi
     done
 
-    echo -e "${WHITE}[-${YELLOW}Summary${WHITE}-] ${RED}*${GREEN}[${YELLOW}Total tools: $total_tools, Installed tools: $installed_tools${GREEN}]${RED}*"
+    echo -e "${PURPLE}--------------------------------------------------${WHITE}"
+    echo -e "${WHITE}[-${YELLOW}Summary${WHITE}-] ${GREEN}Installation process finished.${WHITE}"
+    echo -e "${WHITE}[-${YELLOW}Summary${WHITE}-] ${YELLOW}Total tools checked: $total_tools, Newly installed: $installed_tools${WHITE}"
     if [[ ${#not_installed_tools[@]} -gt 0 ]]; then
-        echo -e "${WHITE}[-${YELLOW}Not Installed${WHITE}-] ${RED}*${GREEN}[${RED}${not_installed_tools[@]}${GREEN}]${RED}*"
+        echo -e "${WHITE}[-${YELLOW}Failed Tools${WHITE}-] ${RED}The following tools could not be installed: ${not_installed_tools[@]}${WHITE}"
     fi
 }
+
 
 # Update multiple Go Tools from a comma-separated list
 update_golang_tools() {
@@ -343,14 +321,14 @@ show_help() {
     echo -e "${WHITE}"
     echo -e "\nUsage: $name [OPTIONS]"
     echo "Options:"
-    echo "  --mac               Install tools for macOS"
-    echo "  --linux             Install tools for Linux"
-    echo "  --golang            Install all Go tools"
-    echo "  --python            Install Python tools"
-    echo "  --python-alter      Install Python tools (alternate method if error)"
+    echo "  --mac                     Install tools for macOS"
+    echo "  --linux                   Install tools for Linux"
+    echo "  --golang                  Install all Go tools with live status"
+    echo "  --python                  Install Python tools"
+    echo "  --python-alter            Install Python tools (alternate method if error)"
     echo "  --update [tool1,tool2,...]  Update specific Go tools from a comma-separated list."
     echo "                              Example: $name --update nuclei,subfinder,httpx"
-    echo "  --help              Show this help screen"
+    echo "  --help                    Show this help screen"
     exit 1
 }
 
@@ -379,5 +357,5 @@ while [[ $# -gt 0 ]]; do
         --help) show_help ;;
         *) echo "Unknown option: $1"; show_help ;;
     esac
-    shift # Consume the current argument
+    shift
 done
