@@ -32,6 +32,7 @@ declare -A GOLANG_TOOLS=(
     ["anew"]="github.com/tomnomnom/anew"
     ["fff"]="github.com/tomnomnom/fff"
     ["subzy"]="github.com/PentestPad/subzy"
+    ["subjack"]="github.com/haccer/subjack"
     ["gron"]="github.com/tomnomnom/gron"
     ["qsreplace"]="github.com/tomnomnom/qsreplace"
     ["cf-check"]="github.com/dwisiswant0/cf-check"
