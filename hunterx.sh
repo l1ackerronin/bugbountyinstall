@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #script info
-author="@nahid0x1"
+author="@l1ackernishan"
 version="v3"
 
 #colors
@@ -19,8 +19,7 @@ info="${WHITE}[-${YELLOW}Info${WHITE}-]"
 #path
 path=("~/websec")
 
-mkdir -p ~/websec
-mkdir -p ~/websec/tools
+mkdir -p ~/websec ~/websec/tools ~/.config
 
 # --- Golang Tools list (Global) ---
 declare -A GOLANG_TOOLS=(
@@ -344,7 +343,7 @@ while [[ $# -gt 0 ]]; do
         --golang) golang_tools ;;
         --python) python_tools ;;
         --python-alter) python_alternate ;;
-        --update)
+        -i)
             if [[ -z "$2" || "$2" == --* ]]; then
                 echo -e "${RED}Error: --update flag requires a comma-separated list of tool names.${WHITE}" >&2
                 show_help
