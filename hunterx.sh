@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #script info
-author="@l1ackernishan"
+author="@l1ackerronin"
 version="v3"
 
 #colors
