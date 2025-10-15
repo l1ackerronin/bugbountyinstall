@@ -83,6 +83,8 @@ declare -A GOLANG_TOOLS=(
     ["asnmap"]="github.com/projectdiscovery/asnmap/cmd/asnmap"
     ["oam_subs"]="github.com/owasp-amass/oam-tools/cmd/oam_subs"
     ["subjs"]="github.com/lc/subjs"
+    ["certinfo"]="github.com/rix4uni/certinfo"
+    ["cspfinder"]="github.com/rix4uni/cspfinder"
 )
 
 
