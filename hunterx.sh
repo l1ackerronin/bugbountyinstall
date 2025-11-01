@@ -85,6 +85,7 @@ declare -A GOLANG_TOOLS=(
     ["subjs"]="github.com/lc/subjs"
     ["certinfo"]="github.com/rix4uni/certinfo"
     ["cspfinder"]="github.com/rix4uni/cspfinder"
+    ["waybackurlsx"]="github.com/rix4uni/waybackurlsx@latest"
 )
 
 
